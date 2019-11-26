@@ -4,7 +4,16 @@ class FlatsController < ApplicationController
   # GET /flats
   # GET /flats.json
   def index
-    @flats = Flat.all
+    @flats = Flat.geocoded #returns flats with coordinates
+
+    @markers = @flats.map do |flat|
+      {
+        lat: flat.latitude,
+        lng: flat.longitude,
+        infoWindow: render_to_string(partial: "info_window", locals: { flat: flat }),
+        image_url: helpers.asset_url('cool-smiley.png')
+      }
+    end
   end
 
   # GET /flats/1
@@ -71,4 +80,4 @@ class FlatsController < ApplicationController
     def flat_params
       params.require(:flat).permit(:name, :address)
     end
-end
+  end
